@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>LYN. runner</title>
     <meta name="description" content="LYN. runner — stack ₿100,000,000. one bitcoin.">
     <meta property="og:title" content="LYN. runner">
@@ -13,15 +13,21 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; touch-action: none; }
         html, body {
             height: 100%;
+            height: 100dvh;
+            width: 100%;
             overflow: hidden;
             touch-action: none;
             -webkit-touch-callout: none;
             -webkit-user-select: none;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
+            -webkit-text-size-adjust: 100%;
+            -moz-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+            overscroll-behavior: none;
         }
         body {
             font-family: 'IBM Plex Sans', -apple-system, sans-serif;
@@ -29,8 +35,12 @@
             background: #111111;
             color: #c8c8c8;
             position: fixed;
+            top: 0; left: 0;
             width: 100%;
             height: 100%;
+            height: 100dvh;
+            overflow: hidden;
+            overscroll-behavior: none;
         }
         canvas { display: block; }
         #gameContainer {
@@ -317,6 +327,48 @@
     </div>
 
     <script>
+    /* ═══════════════════════════════════════════
+       VIEWPORT LOCK
+       Prevent zoom, pull-to-refresh, elastic bounce
+       on all mobile browsers including iOS Safari.
+       ═══════════════════════════════════════════ */
+
+    // Block pinch-zoom and double-tap zoom
+    document.addEventListener('touchmove', function(e) {
+        if (e.touches.length > 1) e.preventDefault();
+    }, { passive: false });
+
+    // Block iOS Safari gesture zoom
+    document.addEventListener('gesturestart', function(e) {
+        e.preventDefault();
+    }, { passive: false });
+    document.addEventListener('gesturechange', function(e) {
+        e.preventDefault();
+    }, { passive: false });
+    document.addEventListener('gestureend', function(e) {
+        e.preventDefault();
+    }, { passive: false });
+
+    // Block double-tap zoom
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function(e) {
+        const now = Date.now();
+        if (now - lastTouchEnd <= 300) e.preventDefault();
+        lastTouchEnd = now;
+    }, { passive: false });
+
+    // Prevent context menu on long press
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    });
+
+    // Prevent any wheel zoom (Ctrl+scroll on desktop, trackpad pinch)
+    document.addEventListener('wheel', function(e) {
+        if (e.ctrlKey) e.preventDefault();
+    }, { passive: false });
+    </script>
+
+    <script>
     const canvas = document.getElementById('game');
     const ctx = canvas.getContext('2d');
 
@@ -354,14 +406,24 @@
     const OB_BASE_INT = 80, COIN_BASE_INT = 35;
 
     function resize() {
-        W = window.innerWidth;
-        H = window.innerHeight;
+        // Use visualViewport for accurate size on iOS (ignores address bar, keyboard)
+        if (window.visualViewport) {
+            W = Math.floor(window.visualViewport.width);
+            H = Math.floor(window.visualViewport.height);
+        } else {
+            W = window.innerWidth;
+            H = window.innerHeight;
+        }
         canvas.width = W;
         canvas.height = H;
         groundY = Math.floor(H * 0.75);
     }
     window.addEventListener('resize', resize);
-    window.addEventListener('orientationchange', () => setTimeout(resize, 150));
+    window.addEventListener('orientationchange', () => setTimeout(resize, 200));
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', resize);
+        window.visualViewport.addEventListener('scroll', resize);
+    }
     resize();
 
     function laneW() { return Math.min(W * 0.22, 120); }
