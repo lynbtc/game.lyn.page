@@ -242,7 +242,6 @@
             color: #bbb;
             margin-bottom: 40px;
         }
-        /* Touch zones — mobile only */
         #touchLeft, #touchRight, #touchJump {
             position: absolute;
             z-index: 15;
@@ -282,7 +281,6 @@
         <div id="touchJump"></div>
         <div id="touchRight"></div>
 
-        <!-- START SCREEN -->
         <div class="overlay" id="startScreen">
             <h1>LYN.</h1>
             <div class="sub">runner</div>
@@ -291,16 +289,11 @@
                 one bitcoin
             </div>
             <button class="start-btn" id="startBtn">run</button>
-            <div class="controls-hint desktop-hint">
-                ← → move · ↑ jump · ↓ slide
-            </div>
-            <div class="controls-hint mobile-hint">
-                swipe to move · swipe up jump · swipe down slide
-            </div>
+            <div class="controls-hint desktop-hint">← → move · ↑ jump · ↓ slide</div>
+            <div class="controls-hint mobile-hint">swipe to move · swipe up jump · swipe down slide</div>
             <div class="footer-credit"><a href="https://lyn.page">lyn.page</a></div>
         </div>
 
-        <!-- GAME OVER SCREEN -->
         <div class="overlay hidden" id="gameOverScreen">
             <div class="final-score-label">bitcoin stacked</div>
             <div class="final-num" id="finalScore">₿0</div>
@@ -312,7 +305,6 @@
             <div class="footer-credit"><a href="https://lyn.page">lyn.page</a></div>
         </div>
 
-        <!-- WIN SCREEN -->
         <div class="overlay hidden" id="winScreen">
             <h1>₿</h1>
             <div class="sub">one bitcoin</div>
@@ -361,7 +353,6 @@
     let gridOffset = 0, obTimer = 0, coinTimer = 0;
     const OB_BASE_INT = 80, COIN_BASE_INT = 35;
 
-    /* ---- Resize ---- */
     function resize() {
         W = window.innerWidth;
         H = window.innerHeight;
@@ -373,11 +364,9 @@
     window.addEventListener('orientationchange', () => setTimeout(resize, 150));
     resize();
 
-    /* ---- Lane helpers ---- */
     function laneW() { return Math.min(W * 0.22, 120); }
     function laneX(l) { return W / 2 + (l - 1) * laneW(); }
 
-    /* ---- Player ---- */
     function resetPlayer() {
         player.lane = 1; player.targetLane = 1; player.prevLane = 1;
         player.jumping = false; player.jumpY = 0; player.jumpVel = 0;
@@ -408,13 +397,6 @@
         if (player.invincible > 0) player.invincible--;
     }
 
-    function playerBounds() {
-        const h = player.sliding ? player.H * 0.4 : player.H;
-        const w = player.W * 0.7;
-        const feetY = groundY + player.jumpY;
-        return { l: player.x - w/2, r: player.x + w/2, t: feetY - h, b: feetY };
-    }
-
     function drawPlayer() {
         const x = player.x + shakeX, w = player.W;
         let h = player.sliding ? player.H * 0.4 : player.H;
@@ -422,24 +404,27 @@
         if (player.invincible > 0 && Math.floor(frame / 3) % 2 === 0) return;
 
         ctx.save();
-        // shadow
         ctx.fillStyle = `rgba(0,0,0,${Math.max(0.05, 0.3 + player.jumpY * 0.003)})`;
         ctx.fillRect(x - w/2 + 4, groundY - 2 + shakeY, w, 4);
-        // body
         ctx.fillStyle = COLORS.player;
         ctx.fillRect(x - w/2, topY, w, h);
-        // label
         ctx.fillStyle = COLORS.bg;
         ctx.font = `600 ${player.sliding ? 8 : 11}px Inter, sans-serif`;
         ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
         ctx.fillText('LYN.', x, topY + h * 0.38);
-        // accent stripe
         ctx.fillStyle = COLORS.playerAccent;
         ctx.fillRect(x - w/2, topY + h - 4, w, 4);
         ctx.restore();
     }
 
-    /* ---- Obstacles ---- */
+    /* ═══════════════════════════════════════════
+       OBSTACLES
+       Collision model: obstacles scroll visually
+       top→bottom but collision is ONLY checked
+       when the obstacle base is at groundY.
+       The hitbox is projected to ground level.
+       ═══════════════════════════════════════════ */
+
     function spawnOb() {
         const lane = Math.floor(Math.random() * 3);
         const type = Math.random() < 0.3 ? 'low' : 'tall';
@@ -454,6 +439,7 @@
                 w: 36,
                 h: type === 'tall' ? 56 : 24,
                 type,
+                hit: false,  // prevent multi-frame hits
             });
         });
     }
@@ -466,11 +452,6 @@
         }
         obstacles.forEach(o => { o.scrollY += speed; });
         obstacles = obstacles.filter(o => o.scrollY < H + 100);
-    }
-
-    function obBounds(o) {
-        const x = laneX(o.lane);
-        return { l: x - o.w/2, r: x + o.w/2, t: o.scrollY - o.h, b: o.scrollY };
     }
 
     function drawObs() {
@@ -491,7 +472,10 @@
         });
     }
 
-    /* ---- Coins ---- */
+    /* ═══════════════════════════════════════════
+       COINS
+       ═══════════════════════════════════════════ */
+
     function coinValue() {
         if (distance < 200) return 10000;
         if (distance < 600) return 50000;
@@ -557,7 +541,10 @@
         });
     }
 
-    /* ---- Particles & Steam ---- */
+    /* ═══════════════════════════════════════════
+       PARTICLES & STEAM
+       ═══════════════════════════════════════════ */
+
     function spawnPart(x, y, count, spread, color, dMin, dMax, sMin, sMax) {
         for (let i = 0; i < count; i++) {
             particles.push({
@@ -604,7 +591,10 @@
         });
     }
 
-    /* ---- World ---- */
+    /* ═══════════════════════════════════════════
+       WORLD DRAWING
+       ═══════════════════════════════════════════ */
+
     function drawWorld() {
         ctx.fillStyle = COLORS.bg; ctx.fillRect(0, 0, W, H);
         const hg = ctx.createLinearGradient(0, 0, 0, groundY);
@@ -628,25 +618,63 @@
         ctx.setLineDash([]);
     }
 
-    /* ---- Collision ---- */
-    function overlap(a, b) { return a.r > b.l && a.l < b.r && a.b > b.t && a.t < b.b; }
+    /* ═══════════════════════════════════════════
+       COLLISION — GROUND-LEVEL PROJECTION
+       
+       The obstacle scrolls visually, but we only
+       test collision when its BASE (scrollY) is
+       within a tight band around groundY.
+       
+       The hitbox is then projected to ground:
+         base = groundY
+         top  = groundY - obstacle.h
+       
+       Player feet = groundY + jumpY
+       Player head = feet - playerH
+       
+       Jump clears if feet are above obstacle top.
+       Slide clears tall obstacles.
+       ═══════════════════════════════════════════ */
 
     function checkCollisions() {
-        const pb = playerBounds();
+        const pH = player.sliding ? player.H * 0.4 : player.H;
+        const pW = player.W * 0.7;
+        const pFeetY = groundY + player.jumpY;
+        const pTopY  = pFeetY - pH;
+        const pL = player.x - pW / 2;
+        const pR = player.x + pW / 2;
 
         obstacles.forEach(o => {
-            const ob = obBounds(o);
-            if (!overlap(pb, ob)) return;
+            if (o.hit) return;
 
-            // Sliding under tall obstacles — pass through
+            // Only collide when obstacle base is near ground level
+            // Window scales with speed so fast obstacles can't skip through
+            const window = speed + 2;
+            if (o.scrollY < groundY - window || o.scrollY > groundY + window) return;
+
+            // Horizontal check — must be in same lane
+            const oX = laneX(o.lane);
+            const oL = oX - o.w / 2;
+            const oR = oX + o.w / 2;
+            if (pR <= oL || pL >= oR) return;
+
+            // Sliding under tall obstacles
             if (player.sliding && o.type === 'tall') return;
 
-            // Jumping over ANY obstacle — if player feet are above obstacle top, no hit
-            if (player.jumpY < 0 && pb.b <= ob.t + 12) return;
+            // Ground-projected hitbox
+            const obTop = groundY - o.h;
 
-            if (player.invincible <= 0) die();
+            // Jump over: player feet above obstacle top
+            if (pFeetY <= obTop) return;
+
+            // Standing/running collision
+            if (player.invincible <= 0) {
+                o.hit = true;
+                die();
+            }
         });
 
+        // Coin collection
         coins.forEach(c => {
             if (c.collected) return;
             const ctr = coinCenter(c), pcx = player.x;
@@ -700,7 +728,6 @@
         setTimeout(() => { document.getElementById('winScreen').classList.remove('hidden'); }, 800);
     }
 
-    /* ---- UI ---- */
     function updateUI() {
         document.getElementById('scoreValue').textContent = fmtBtc(score);
         const me = document.getElementById('multValue');
@@ -711,22 +738,23 @@
         document.getElementById('progressText').textContent = fmtBtc(score) + ' / ₿100,000,000';
     }
 
-    /* ---- Controls ---- */
-    function moveLeft() { if (player.targetLane > 0) { player.prevLane = player.targetLane; player.targetLane--; player.laneT = 0; } }
+    /* ═══════════════════════════════════════════
+       CONTROLS
+       ═══════════════════════════════════════════ */
+
+    function moveLeft()  { if (player.targetLane > 0) { player.prevLane = player.targetLane; player.targetLane--; player.laneT = 0; } }
     function moveRight() { if (player.targetLane < 2) { player.prevLane = player.targetLane; player.targetLane++; player.laneT = 0; } }
-    function jump() { if (!player.jumping && !player.sliding) { player.jumping = true; player.jumpVel = -13; } }
+    function jump()  { if (!player.jumping && !player.sliding) { player.jumping = true; player.jumpVel = -13; } }
     function slide() { if (!player.jumping && !player.sliding) { player.sliding = true; player.slideTimer = player.SLIDE_DUR; } }
 
-    // Keyboard
     document.addEventListener('keydown', e => {
         if (state !== 'playing') return;
-        if (e.key === 'ArrowLeft' || e.key === 'a') moveLeft();
+        if (e.key === 'ArrowLeft'  || e.key === 'a') moveLeft();
         if (e.key === 'ArrowRight' || e.key === 'd') moveRight();
-        if (e.key === 'ArrowUp' || e.key === 'w' || e.key === ' ') { e.preventDefault(); jump(); }
-        if (e.key === 'ArrowDown' || e.key === 's') slide();
+        if (e.key === 'ArrowUp'    || e.key === 'w' || e.key === ' ') { e.preventDefault(); jump(); }
+        if (e.key === 'ArrowDown'  || e.key === 's') slide();
     });
 
-    // Touch — swipe detection (works everywhere on screen)
     let touchSX = 0, touchSY = 0, touchST = 0, touchActive = false;
 
     document.addEventListener('touchstart', e => {
@@ -739,7 +767,6 @@
 
     document.addEventListener('touchmove', e => {
         if (state !== 'playing' || !touchActive) return;
-        // Prevent default scrolling during gameplay
         e.preventDefault();
     }, { passive: false });
 
@@ -759,7 +786,6 @@
         }
     }, { passive: true });
 
-    // Touch zone taps (mobile fallback)
     document.getElementById('touchLeft').addEventListener('touchstart', e => {
         if (state === 'playing') { e.stopPropagation(); moveLeft(); }
     }, { passive: true });
@@ -770,7 +796,10 @@
         if (state === 'playing') { e.stopPropagation(); jump(); }
     }, { passive: true });
 
-    /* ---- Game lifecycle ---- */
+    /* ═══════════════════════════════════════════
+       GAME LIFECYCLE
+       ═══════════════════════════════════════════ */
+
     function startGame() {
         state = 'playing'; score = 0; distance = 0; speed = BASE_SPEED;
         streak = 0; multiplier = 1; frame = 0;
@@ -786,7 +815,6 @@
     document.getElementById('restartBtn').addEventListener('click', startGame);
     document.getElementById('winRestartBtn').addEventListener('click', startGame);
 
-    // Also allow touch on buttons (ensure they work on mobile)
     ['startBtn', 'restartBtn', 'winRestartBtn'].forEach(id => {
         document.getElementById(id).addEventListener('touchend', e => {
             e.preventDefault();
@@ -800,7 +828,10 @@
         }
     });
 
-    /* ---- Main loop ---- */
+    /* ═══════════════════════════════════════════
+       MAIN LOOP
+       ═══════════════════════════════════════════ */
+
     function loop(ts) {
         if (!lastTime) lastTime = ts;
         lastTime = ts;
