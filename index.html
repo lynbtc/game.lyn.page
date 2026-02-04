@@ -329,40 +329,37 @@
     <script>
     /* ═══════════════════════════════════════════
        VIEWPORT LOCK
-       Prevent zoom, pull-to-refresh, elastic bounce
-       on all mobile browsers including iOS Safari.
+       Prevent ALL zoom, pull-to-refresh, elastic
+       bounce on iOS Safari and Android Chrome.
+       
+       Strategy: block every touch default at the
+       document level, unconditionally. The game
+       handles its own input — the browser never
+       needs to interpret touches.
        ═══════════════════════════════════════════ */
 
-    // Block pinch-zoom and double-tap zoom
+    // Block ALL default touch behavior — no zoom, no scroll, no bounce, ever
+    document.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+    }, { passive: false });
+
     document.addEventListener('touchmove', function(e) {
-        if (e.touches.length > 1) e.preventDefault();
+        e.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener('touchend', function(e) {
+        e.preventDefault();
     }, { passive: false });
 
     // Block iOS Safari gesture zoom
-    document.addEventListener('gesturestart', function(e) {
-        e.preventDefault();
-    }, { passive: false });
-    document.addEventListener('gesturechange', function(e) {
-        e.preventDefault();
-    }, { passive: false });
-    document.addEventListener('gestureend', function(e) {
-        e.preventDefault();
-    }, { passive: false });
-
-    // Block double-tap zoom
-    let lastTouchEnd = 0;
-    document.addEventListener('touchend', function(e) {
-        const now = Date.now();
-        if (now - lastTouchEnd <= 300) e.preventDefault();
-        lastTouchEnd = now;
-    }, { passive: false });
+    document.addEventListener('gesturestart', function(e) { e.preventDefault(); }, { passive: false });
+    document.addEventListener('gesturechange', function(e) { e.preventDefault(); }, { passive: false });
+    document.addEventListener('gestureend', function(e) { e.preventDefault(); }, { passive: false });
 
     // Prevent context menu on long press
-    document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-    });
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
 
-    // Prevent any wheel zoom (Ctrl+scroll on desktop, trackpad pinch)
+    // Prevent Ctrl+wheel zoom on desktop
     document.addEventListener('wheel', function(e) {
         if (e.ctrlKey) e.preventDefault();
     }, { passive: false });
@@ -817,24 +814,21 @@
         if (e.key === 'ArrowDown'  || e.key === 's') slide();
     });
 
-    let touchSX = 0, touchSY = 0, touchST = 0, touchActive = false;
+    // ── Touch input ──
+    // All default touch behavior is blocked globally (viewport lock script).
+    // We capture touch coordinates in the capture phase so we always get them.
 
-    document.addEventListener('touchstart', e => {
-        if (state !== 'playing') return;
+    let touchSX = 0, touchSY = 0, touchST = 0;
+
+    document.addEventListener('touchstart', function(e) {
+        if (state !== 'playing' || !e.touches.length) return;
         touchSX = e.touches[0].clientX;
         touchSY = e.touches[0].clientY;
         touchST = Date.now();
-        touchActive = true;
-    }, { passive: true });
+    }, true);  // capture phase — fires before the global blocker
 
-    document.addEventListener('touchmove', e => {
-        if (state !== 'playing' || !touchActive) return;
-        e.preventDefault();
-    }, { passive: false });
-
-    document.addEventListener('touchend', e => {
-        if (state !== 'playing' || !touchActive) return;
-        touchActive = false;
+    document.addEventListener('touchend', function(e) {
+        if (state !== 'playing' || !e.changedTouches.length) return;
         const dx = e.changedTouches[0].clientX - touchSX;
         const dy = e.changedTouches[0].clientY - touchSY;
         const elapsed = Date.now() - touchST;
@@ -846,17 +840,18 @@
         } else if (ay > MIN_SWIPE) {
             dy < 0 ? jump() : slide();
         }
-    }, { passive: true });
+    }, true);  // capture phase
 
-    document.getElementById('touchLeft').addEventListener('touchstart', e => {
-        if (state === 'playing') { e.stopPropagation(); moveLeft(); }
-    }, { passive: true });
-    document.getElementById('touchRight').addEventListener('touchstart', e => {
-        if (state === 'playing') { e.stopPropagation(); moveRight(); }
-    }, { passive: true });
-    document.getElementById('touchJump').addEventListener('touchstart', e => {
-        if (state === 'playing') { e.stopPropagation(); jump(); }
-    }, { passive: true });
+    // Touch zone taps (mobile fallback — direct element listeners)
+    document.getElementById('touchLeft').addEventListener('touchstart', function() {
+        if (state === 'playing') moveLeft();
+    }, true);
+    document.getElementById('touchRight').addEventListener('touchstart', function() {
+        if (state === 'playing') moveRight();
+    }, true);
+    document.getElementById('touchJump').addEventListener('touchstart', function() {
+        if (state === 'playing') jump();
+    }, true);
 
     /* ═══════════════════════════════════════════
        GAME LIFECYCLE
@@ -877,11 +872,12 @@
     document.getElementById('restartBtn').addEventListener('click', startGame);
     document.getElementById('winRestartBtn').addEventListener('click', startGame);
 
+    // Touch handlers for buttons — capture phase so they fire before the global blocker
     ['startBtn', 'restartBtn', 'winRestartBtn'].forEach(id => {
-        document.getElementById(id).addEventListener('touchend', e => {
-            e.preventDefault();
+        document.getElementById(id).addEventListener('touchstart', function(e) {
+            e.stopImmediatePropagation();  // don't let global blocker eat this
             startGame();
-        });
+        }, true);
     });
 
     document.addEventListener('keydown', e => {
