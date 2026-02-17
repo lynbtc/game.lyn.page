@@ -203,6 +203,30 @@
         }
     });
 
+    // ── Escape inside iframe ──
+    // The iframe steals focus so keydown on document won't fire.
+    // Inject a tiny listener into same-origin game iframes and
+    // also listen for postMessage from them.
+
+    iframe.addEventListener('load', function () {
+        try {
+            var iDoc = iframe.contentDocument || iframe.contentWindow.document;
+            iDoc.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    window.parent.postMessage('skoledi:escape', '*');
+                }
+            });
+        } catch (e) {
+            // cross-origin — can't inject, that's fine
+        }
+    });
+
+    window.addEventListener('message', function (e) {
+        if (e.data === 'skoledi:escape' && mode === 'playing') {
+            showPortal();
+        }
+    });
+
     // ── Android back button / browser back ──
     // Push history state when entering game modes so the
     // hardware back button navigates within the app.
