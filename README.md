@@ -1,61 +1,87 @@
-# LYN. runner
+# Skoledi
 
-A minimal endless runner. Stack ₿100,000,000. One bitcoin.
+A fake Danish school portal that secretly contains browser games.
 
-**[play →](https://game.lyn.page)**
+The landing page looks exactly like a real school portal (Aula/Skoleintra). No visible game elements. A secret trigger reveals a game selection layer.
+
+**[skoledi.lyn.page](https://skoledi.lyn.page)**
 
 ---
 
-## what
+## the secret
 
-Three-lane browser game built for [LYN.](https://lyn.page) — a modular sauna system with integrated bitcoin mining.
+Click the **Skoledi** logo 5 times fast. The main content area transforms into a game selection grid. Games load inside the portal — the header and sidebar stay visible at all times.
 
-Run. Dodge obstacles. Collect bitcoin. Reach one full bitcoin (₿100,000,000 per [BIP 177](https://bips.dev/177/)) and you win.
+Press **Escape** to return to the game grid. Click the logo 5x again to return to the boring school portal.
 
-## how to play
+## games
 
-| input | action |
-|---|---|
-| ← → | switch lanes |
-| ↑ | jump |
-| ↓ | slide |
-| swipe | mobile controls |
+| game | path | description |
+|---|---|---|
+| LYN Runner | `/runner/` | Endless runner. Stack one bitcoin. |
 
-Collect coins to build streaks. Streaks increase your hashrate multiplier (up to ×5). Coin values scale with distance.
+Games are registered in `games.json` and rendered dynamically.
+
+## contributing
+
+Want to add a game? Here's how:
+
+1. **Fork this repo**
+2. **Create a subdirectory** for your game (e.g. `/snake/`)
+3. **Build your game** as static HTML — no frameworks, no build step
+4. **Add an entry** to `games.json`:
+   ```json
+   {
+     "name": "Your Game",
+     "path": "/your-game/",
+     "description": "Short description.",
+     "thumbnail": "/your-game/preview.png"
+   }
+   ```
+5. **Test it** — the game must work within a constrained content area (not fullscreen). The portal header and sidebar are always visible.
+6. **Open a PR**
+
+### game guidelines
+
+- Static HTML only. No build tools, no frameworks.
+- Must work inside an iframe within the portal's main content area.
+- Keep file sizes reasonable — no massive assets.
+- Game should be playable on both desktop and mobile.
+
+## project structure
+
+```
+/index.html      ← school portal (Danish)
+/style.css       ← portal stylesheet
+/skoledi.js      ← secret trigger, game layer, clock
+/games.json      ← game registry
+/runner/         ← LYN runner (first game)
+```
 
 ## run locally
 
-Open `index.html` in a browser. That's it — zero dependencies, no build step.
+Serve from any static file server. The simplest option:
+
+```
+npx serve .
+```
+
+Or just open `index.html` in a browser (note: `fetch()` for games.json requires a server).
 
 ## deploy
 
-Single static file. Drop on Netlify, Vercel, GitHub Pages, or any web server.
+Push to `main` — Netlify auto-deploys. No build command needed.
 
-## scoring (BIP 177)
+## tech
 
-Score follows [BIP 177](https://bips.dev/177/) — bitcoin's base unit is the standard unit of account. Displayed as `₿N,NNN,NNN` with comma formatting. Legacy BTC notation shown on game over for reference.
-
-| distance | coin value |
-|---|---|
-| 0–200m | ₿10,000 |
-| 200–600m | ₿50,000 |
-| 600–1,200m | ₿100,000 |
-| 1,200–2,500m | ₿250,000 |
-| 2,500–5,000m | ₿500,000 |
-| 5,000m+ | ₿1,000,000 |
-
-## stack
-
-Single `index.html`. Canvas rendering. No frameworks, no dependencies, no build tools.
-
-- IBM Plex Sans / Mono + Inter
-- Dark mode only
-- Mobile + desktop
-- High score persisted via localStorage
+- Static HTML, CSS, vanilla JS
+- No frameworks, no dependencies, no build tools
+- Same-origin iframes for game loading
+- Danish language throughout the portal UI
 
 ## license
 
-MIT — do whatever you want.
+MIT
 
 ---
 
