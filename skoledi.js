@@ -1,11 +1,12 @@
 /* ═══════════════════════════════════════════
-   Skoledi — secret game layer controller
+   Skoledi — secret game layer + fun details
 
-   Click the Skoledi logo 5 times fast to
-   reveal the game selection grid. Press
-   Escape or the back button to return.
-   Click the logo 5x again from game view
-   to return to the school portal.
+   Click the Skoledi logo 5 times fast →
+   game selection overlay. Escape to return.
+   Logo 5x from game view → back to portal.
+
+   Also: tiny alternating easter eggs in the
+   page details that change over time.
    ═══════════════════════════════════════════ */
 
 (function () {
@@ -13,45 +14,19 @@
 
     // ── State ──
 
-    let mode = 'portal';   // 'portal' | 'games' | 'playing'
-    let games = [];
-    let clickTimestamps = [];
+    var mode = 'portal';   // 'portal' | 'games' | 'playing'
+    var games = [];
+    var clickTimestamps = [];
 
     // ── DOM refs ──
 
-    const logo = document.getElementById('logo-trigger');
-    const portalContent = document.getElementById('portal-content');
-    const gameLayer = document.getElementById('game-layer');
-    const gameGrid = document.getElementById('game-grid');
-    const iframeWrap = document.getElementById('game-iframe-wrap');
-    const iframe = document.getElementById('game-iframe');
-    const backBtn = document.getElementById('game-back-btn');
-
-    // ── Clock ──
-
-    const clockEl = document.getElementById('header-clock');
-
-    function updateClock() {
-        const now = new Date();
-        const h = String(now.getHours()).padStart(2, '0');
-        const m = String(now.getMinutes()).padStart(2, '0');
-        clockEl.textContent = h + ':' + m;
-    }
-
-    updateClock();
-    setInterval(updateClock, 10000);
-
-    // ── Date display ──
-
-    const dateEl = document.getElementById('welcome-date');
-    if (dateEl) {
-        const now = new Date();
-        const days = ['søndag', 'mandag', 'tirsdag', 'onsdag', 'torsdag', 'fredag', 'lørdag'];
-        const months = ['januar', 'februar', 'marts', 'april', 'maj', 'juni',
-                        'juli', 'august', 'september', 'oktober', 'november', 'december'];
-        dateEl.textContent = days[now.getDay()] + ' d. ' +
-            now.getDate() + '. ' + months[now.getMonth()] + ' ' + now.getFullYear();
-    }
+    var logo = document.getElementById('logo-trigger');
+    var portalContent = document.getElementById('portal-content');
+    var gameLayer = document.getElementById('game-layer');
+    var gameGrid = document.getElementById('game-grid');
+    var iframeWrap = document.getElementById('game-iframe-wrap');
+    var iframe = document.getElementById('game-iframe');
+    var backBtn = document.getElementById('game-back-btn');
 
     // ── Load games registry ──
 
@@ -72,7 +47,6 @@
         games.forEach(function (game, i) {
             var card = document.createElement('div');
             card.className = 'game-card';
-            card.setAttribute('data-index', i);
 
             var thumb = document.createElement('div');
             thumb.className = 'game-card-thumb';
@@ -110,13 +84,12 @@
     // ── Secret trigger: 5 rapid clicks on logo ──
 
     var CLICK_THRESHOLD = 5;
-    var CLICK_WINDOW = 1200; // ms — all 5 clicks within this window
+    var CLICK_WINDOW = 1200;
 
     logo.addEventListener('click', function () {
         var now = Date.now();
         clickTimestamps.push(now);
 
-        // Keep only clicks within the time window
         clickTimestamps = clickTimestamps.filter(function (t) {
             return now - t < CLICK_WINDOW;
         });
@@ -148,6 +121,7 @@
             portalContent.style.display = 'block';
             portalContent.offsetHeight;
             portalContent.style.opacity = '1';
+            document.body.style.overflow = '';
         }, 10);
     }
 
@@ -157,9 +131,9 @@
         setTimeout(function () {
             portalContent.style.display = 'none';
             gameLayer.style.display = 'block';
-            // Force reflow
             gameLayer.offsetHeight;
             gameLayer.classList.add('visible');
+            document.body.style.overflow = 'hidden';
         }, 200);
     }
 
@@ -170,8 +144,9 @@
         gameLayer.classList.remove('visible');
         setTimeout(function () {
             gameLayer.style.display = 'none';
-            iframeWrap.classList.add('visible');
             iframeWrap.style.display = 'block';
+            iframeWrap.offsetHeight;
+            iframeWrap.classList.add('visible');
             iframe.src = game.path;
         }, 200);
     }
@@ -203,28 +178,70 @@
         }
     });
 
-    // ── Schedule highlight: mark current period ──
+    // ── Portal content transitions ──
 
-    (function highlightSchedule() {
-        var entries = document.querySelectorAll('.schedule-entry');
-        var now = new Date();
-        var h = now.getHours();
-        var m = now.getMinutes();
-        var currentMinutes = h * 60 + m;
+    portalContent.style.transition = 'opacity 0.2s ease';
 
-        entries.forEach(function (entry) {
-            var timeStr = entry.getAttribute('data-start');
-            if (!timeStr) return;
-            var parts = timeStr.split(':');
-            var startMin = parseInt(parts[0]) * 60 + parseInt(parts[1]);
-            var endStr = entry.getAttribute('data-end');
-            var endParts = endStr ? endStr.split(':') : null;
-            var endMin = endParts ? parseInt(endParts[0]) * 60 + parseInt(endParts[1]) : startMin + 45;
+    /* ═══════════════════════════════════════════
+       FUN ALTERNATING DETAILS
+       Small things that change to keep the page
+       alive if you look closely.
+       ═══════════════════════════════════════════ */
 
-            if (currentMinutes >= startMin && currentMinutes < endMin) {
-                entry.classList.add('now');
+    // 1. Screen badge emoji cycles through subjects
+    var badges = ['⭐', '📐', '📏', '🔢', '📊', '🧮', '✏️', '💡', '🎯', '🏆'];
+    var badgeEl = document.getElementById('screen-badge');
+    if (badgeEl) {
+        setInterval(function () {
+            badgeEl.textContent = badges[Math.floor(Math.random() * badges.length)];
+        }, 4000);
+    }
+
+    // 2. Formula in the laptop screen changes
+    var formulas = [
+        'a² + b² = c²',
+        'E = mc²',
+        'π ≈ 3,14159',
+        'Δ = b² − 4ac',
+        'f(x) = mx + b',
+        'A = πr²',
+        'sin²θ + cos²θ = 1',
+        '∑ = n(n+1)/2',
+        'V = 4/3 πr³',
+        'x = −b ± √Δ / 2a',
+    ];
+    var formulaEl = document.getElementById('screen-formula');
+    if (formulaEl) {
+        setInterval(function () {
+            formulaEl.style.opacity = '0';
+            formulaEl.style.transition = 'opacity 0.3s';
+            setTimeout(function () {
+                formulaEl.textContent = formulas[Math.floor(Math.random() * formulas.length)];
+                formulaEl.style.opacity = '1';
+            }, 300);
+        }, 7000);
+    }
+
+    // 3. The "løste opgaver" stat ticks up slowly like a live counter
+    var tasksEl = document.getElementById('stat-tasks');
+    if (tasksEl) {
+        var taskCount = 14238471;
+        setInterval(function () {
+            taskCount += Math.floor(Math.random() * 3) + 1;
+            tasksEl.textContent = taskCount.toLocaleString('da-DK');
+        }, 2200);
+    }
+
+    // 4. Schools stat occasionally bumps up by 1
+    var schoolsEl = document.getElementById('stat-schools');
+    if (schoolsEl) {
+        var schoolCount = 1847;
+        setInterval(function () {
+            if (Math.random() < 0.15) {
+                schoolCount++;
+                schoolsEl.textContent = schoolCount.toLocaleString('da-DK');
             }
-        });
-    })();
+        }, 12000);
+    }
 
 })();

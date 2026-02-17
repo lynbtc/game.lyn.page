@@ -3,292 +3,222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skoledi — Elevportal</title>
-    <meta name="description" content="Skoledi elevportal. Log ind for at se beskeder, skema, lektier og mere.">
-    <meta property="og:title" content="Skoledi — Elevportal">
-    <meta property="og:description" content="Digital læringsportal for elever og forældre.">
+    <title>Skoledi — Danmarks digitale læringsportal</title>
+    <meta name="description" content="Skoledi — Danmarks mest udbredte læringsportal for 0.–10. klasse.">
+    <meta property="og:title" content="Skoledi">
+    <meta property="og:description" content="Danmarks digitale læringsportal for 0.–10. klasse.">
     <meta property="og:type" content="website">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%232c5f8a' width='100' height='100' rx='16'/><text x='50' y='68' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='700' font-size='52'>S</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%2347ad86' width='100' height='100' rx='16'/><text x='50' y='68' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='700' font-size='52'>S</text></svg>">
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
 <!-- ═══════════════════════════════════════════
-     Header — Skoledi branding, search, clock,
-     notification bell, user info
+     Header — logo left, login right
+     Matches Skoledu's minimal top bar
      ═══════════════════════════════════════════ -->
 
 <header class="header">
-    <div class="header-left">
-        <div class="logo" id="logo-trigger">
-            <div class="logo-icon">S</div>
-            <span class="logo-text">Skoledi</span>
-        </div>
-        <div class="header-search">
-            <span class="header-search-icon">&#128269;</span>
-            <input type="text" placeholder="Søg i portalen...">
-        </div>
+    <div class="logo" id="logo-trigger">
+        <!-- Inline SVG pencil icon matching Skoledu's logo style -->
+        <svg class="logo-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 28l2-8L24 6l6 6-14 14-8 2z" fill="#eb6954" stroke="#eb6954" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M18 12l6 6" stroke="#fff8f5" stroke-width="1.5"/>
+            <path d="M8 28l2.5-1 .5.5-1 2.5" fill="#262626"/>
+        </svg>
+        <span class="logo-text">SKOLEDI</span>
     </div>
-    <div class="header-right">
-        <span class="header-clock" id="header-clock">--:--</span>
-        <div class="header-bell">
-            &#128276;
-            <span class="bell-badge">3</span>
-        </div>
-        <div class="header-user">
-            <div class="user-avatar">MH</div>
-            <span>Mikkel H.</span>
-        </div>
-    </div>
+    <a href="#" class="login-btn">LOGIN &rarr;</a>
 </header>
 
 <!-- ═══════════════════════════════════════════
-     Sidebar — class info, schedule, navigation
+     Hero — split layout, text left, green
+     organic shape right, matching Skoledu
      ═══════════════════════════════════════════ -->
 
-<nav class="sidebar">
-    <div class="sidebar-class">
-        <div class="sidebar-class-name">7.B</div>
-        <div class="sidebar-class-teacher">Klasselærer: Anne-Mette Kjær</div>
-    </div>
+<div id="portal-content">
 
-    <div class="sidebar-schedule">
-        <div class="sidebar-schedule-title">Dagens skema</div>
-        <div class="schedule-entry" data-start="08:00" data-end="08:45">
-            <span class="schedule-time">08:00</span>
-            <span>Dansk</span>
+    <section class="hero">
+        <div class="hero-text">
+            <h1>Oplev<br>Skoledi</h1>
+            <div class="hero-squiggle">
+                <!-- Orange hand-drawn underline like Skoledu -->
+                <svg viewBox="0 0 220 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 10c20-8 45 4 65-2s40 6 60 0 42 8 62 0 28 6 28 6" stroke="#eb9b54" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.7"/>
+                    <path d="M5 12c18-6 42 5 62-1s38 5 58 1 40 6 60 1 30 4 30 4" stroke="#eb9b54" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.5"/>
+                </svg>
+            </div>
+            <p class="hero-sub">Danmarks mest udbredte<br>læringsportal for<br>0. – 10. klasse</p>
+            <a href="#" class="cta-btn">LÆS MERE &rarr;</a>
         </div>
-        <div class="schedule-entry" data-start="08:50" data-end="09:35">
-            <span class="schedule-time">08:50</span>
-            <span>Dansk</span>
-        </div>
-        <div class="schedule-entry" data-start="09:50" data-end="10:35">
-            <span class="schedule-time">09:50</span>
-            <span>Matematik</span>
-        </div>
-        <div class="schedule-entry" data-start="10:40" data-end="11:25">
-            <span class="schedule-time">10:40</span>
-            <span>Engelsk</span>
-        </div>
-        <div class="schedule-entry" data-start="11:50" data-end="12:35">
-            <span class="schedule-time">11:50</span>
-            <span>Natur/teknik</span>
-        </div>
-        <div class="schedule-entry" data-start="12:40" data-end="13:25">
-            <span class="schedule-time">12:40</span>
-            <span>Idræt</span>
-        </div>
-        <div class="schedule-entry" data-start="13:30" data-end="14:15">
-            <span class="schedule-time">13:30</span>
-            <span>Idræt</span>
-        </div>
-    </div>
+        <div class="hero-visual">
+            <!-- Green organic blob background -->
+            <svg class="hero-blob" viewBox="0 0 600 800" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMaxYMin slice">
+                <path d="M300 0c80 0 160 30 220 80s100 120 120 200c20 80 10 160-20 240s-80 150-150 200-160 80-250 80-170-20-230-70S-60 610-70 530s0-170 30-250S100 120 160 70 220 0 300 0z" fill="#47ad86"/>
+            </svg>
+            <!-- Laptop mockup with screen content -->
+            <div class="hero-laptop">
+                <div class="laptop-screen">
+                    <div class="screen-bar">
+                        <span class="screen-dot red"></span>
+                        <span class="screen-dot yellow"></span>
+                        <span class="screen-dot green"></span>
+                        <span class="screen-url">skoledi.dk/pythagoras</span>
+                        <!-- Fun detail: tiny icons that change -->
+                        <span class="screen-badge" id="screen-badge">⭐</span>
+                    </div>
+                    <div class="screen-content">
+                        <div class="screen-sidebar">
+                            <div class="screen-line w80"></div>
+                            <div class="screen-line w60"></div>
+                            <div class="screen-line w90"></div>
+                            <div class="screen-line w50"></div>
+                            <div class="screen-line w70"></div>
+                        </div>
+                        <div class="screen-main">
+                            <div class="screen-formula" id="screen-formula">a² + b² = c²</div>
+                            <div class="screen-figures">
+                                <div class="screen-fig">
+                                    <div class="fig-label">1)</div>
+                                    <!-- Rotated square with triangle -->
+                                    <svg viewBox="0 0 100 100" class="fig-svg">
+                                        <rect x="25" y="25" width="50" height="50" fill="#d3e9ff" stroke="#4c7aa6" stroke-width="1.5" transform="rotate(15 50 50)"/>
+                                        <polygon points="30,70 70,70 70,40" fill="#47ad86" opacity="0.5" stroke="#47ad86" stroke-width="1"/>
+                                        <polygon points="30,70 55,45 70,70" fill="#eb6954" opacity="0.3"/>
+                                    </svg>
+                                </div>
+                                <div class="screen-fig">
+                                    <div class="fig-label">2)</div>
+                                    <svg viewBox="0 0 100 100" class="fig-svg">
+                                        <rect x="20" y="20" width="55" height="55" fill="#f5d0c5" stroke="#eb6954" stroke-width="1.5" transform="rotate(-10 50 50)"/>
+                                        <rect x="35" y="35" width="30" height="30" fill="#eb9b54" opacity="0.6" transform="rotate(25 50 50)"/>
+                                        <circle cx="50" cy="50" r="5" fill="#47ad86"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="laptop-base">
+                    <div class="laptop-notch"></div>
+                </div>
+            </div>
 
-    <div class="sidebar-section">
-        <div class="sidebar-label">Navigation</div>
-    </div>
-    <a class="sidebar-item active" href="#">
-        <span class="sidebar-item-icon">&#127968;</span>
-        <span>Overblik</span>
-    </a>
-    <a class="sidebar-item" href="#">
-        <span class="sidebar-item-icon">&#128172;</span>
-        <span>Beskeder</span>
-    </a>
-    <a class="sidebar-item" href="#">
-        <span class="sidebar-item-icon">&#128197;</span>
-        <span>Ugeplan</span>
-    </a>
-    <a class="sidebar-item" href="#">
-        <span class="sidebar-item-icon">&#128218;</span>
-        <span>Lektier</span>
-    </a>
-    <a class="sidebar-item" href="#">
-        <span class="sidebar-item-icon">&#128202;</span>
-        <span>Karakterer</span>
-    </a>
-    <a class="sidebar-item" href="#">
-        <span class="sidebar-item-icon">&#128101;</span>
-        <span>Klassens side</span>
-    </a>
+            <!-- "Har skolen allerede adgang?" floating text -->
+            <div class="hero-hint">
+                <span>Har skolen<br>allerede adgang?</span>
+                <svg class="hint-arrow" viewBox="0 0 40 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 40 C10 20, 20 5, 35 8" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+                    <path d="M30 2l6 6-8 2" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+        </div>
+    </section>
 
-    <div class="sidebar-section">
-        <div class="sidebar-label">Links</div>
-    </div>
-    <a class="sidebar-item" href="#">
-        <span class="sidebar-item-icon">&#128214;</span>
-        <span>Skolens hjemmeside</span>
-    </a>
-    <a class="sidebar-item" href="#">
-        <span class="sidebar-item-icon">&#9881;</span>
-        <span>Indstillinger</span>
-    </a>
-</nav>
+    <!-- ═══════════════════════════════════════════
+         Sections below the fold — features, stats
+         Fun alternating details hidden in the data
+         ═══════════════════════════════════════════ -->
+
+    <section class="features">
+        <div class="features-inner">
+            <div class="feature-card">
+                <div class="feature-icon" style="background: #d2ebde;">📐</div>
+                <h3>Interaktive opgaver</h3>
+                <p>Over 14.000 opgaver tilpasset Fælles Mål. Fra talforståelse til trigonometri.</p>
+                <!-- Fun detail: the number changes sometimes -->
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" style="background: #d3e9ff;">📊</div>
+                <h3>Elevdata & indsigt</h3>
+                <p>Følg den enkelte elevs progression. Identificér styrker og indsatsområder.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" style="background: #fde8e4;">🎮</div>
+                <h3>Læring der engagerer</h3>
+                <p>Gamification, badges og udfordringer holder motivationen høj.</p>
+                <!-- Fun detail: this card's emoji occasionally changes -->
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="stats-inner">
+            <div class="stat">
+                <div class="stat-num" id="stat-schools">1.847</div>
+                <div class="stat-label">skoler</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">423.000+</div>
+                <div class="stat-label">elever</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num" id="stat-tasks">14.238.471</div>
+                <div class="stat-label">løste opgaver</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <h2>Klar til at komme i gang?</h2>
+        <p>Kontakt os for en demo eller start en gratis prøveperiode i dag.</p>
+        <a href="#" class="cta-btn">KONTAKT OS &rarr;</a>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-col">
+                <div class="footer-logo">
+                    <svg class="footer-logo-icon" viewBox="0 0 36 36" fill="none">
+                        <path d="M8 28l2-8L24 6l6 6-14 14-8 2z" fill="#eb6954" stroke="#eb6954" stroke-width="1.5" stroke-linejoin="round"/>
+                        <path d="M18 12l6 6" stroke="#fff" stroke-width="1.5"/>
+                    </svg>
+                    SKOLEDI
+                </div>
+                <p class="footer-desc">Danmarks digitale læringsportal for matematik i grundskolen.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Produkt</h4>
+                <a href="#">Funktioner</a>
+                <a href="#">Priser</a>
+                <a href="#">Fælles Mål</a>
+            </div>
+            <div class="footer-col">
+                <h4>Support</h4>
+                <a href="#">Hjælpecenter</a>
+                <a href="#">Kontakt</a>
+                <a href="#">Status</a>
+            </div>
+            <div class="footer-col">
+                <h4>Om os</h4>
+                <a href="#">Team</a>
+                <a href="#">Blog</a>
+                <a href="#">Karriere</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2025 Skoledi ApS &middot; CVR 42871653 &middot; Kronprinsessegade 46, 1306 København K
+        </div>
+    </footer>
+
+</div>
 
 <!-- ═══════════════════════════════════════════
-     Main content area — switches between
-     portal view, game grid, and game iframe
+     Game layer — revealed by secret trigger
      ═══════════════════════════════════════════ -->
 
-<main class="main">
-
-    <!-- Portal content (default view) -->
-    <div id="portal-content" style="transition: opacity 0.2s ease;">
-
-        <div class="welcome-bar">
-            <div class="welcome-text">Goddag, Mikkel</div>
-            <div class="welcome-date" id="welcome-date"></div>
-        </div>
-
-        <!-- Module tiles -->
-        <div class="tile-grid">
-            <div class="tile tile-beskeder">
-                <div class="tile-header">
-                    <span class="tile-icon">&#128172;</span>
-                    <span class="tile-title">Beskeder<span class="tile-badge">3</span></span>
-                </div>
-                <div class="tile-body">
-                    <strong>Anne-Mette Kjær:</strong> Husk at aflevere samtykke&shy;erklæringen til lejrskolen senest fredag.
-                </div>
-            </div>
-
-            <div class="tile tile-skema">
-                <div class="tile-header">
-                    <span class="tile-icon">&#128197;</span>
-                    <span class="tile-title">Skema</span>
-                </div>
-                <div class="tile-body">
-                    Næste time: Matematik med Lars P. i lokale 2.14
-                </div>
-            </div>
-
-            <div class="tile tile-lektier">
-                <div class="tile-header">
-                    <span class="tile-icon">&#128218;</span>
-                    <span class="tile-title">Lektier<span class="tile-badge">2</span></span>
-                </div>
-                <div class="tile-body">
-                    <strong>Dansk:</strong> Læs kapitel 7–9 i "Intet" og skriv en kort analyse.<br>
-                    <strong>Matematik:</strong> Opgave 4.2 a–d, side 112.
-                </div>
-            </div>
-
-            <div class="tile tile-fravaer">
-                <div class="tile-header">
-                    <span class="tile-icon">&#128203;</span>
-                    <span class="tile-title">Fravær</span>
-                </div>
-                <div class="tile-body">
-                    Fravær denne måned: 2 dage (4,2%)<br>
-                    Samlet i år: 8 dage (3,7%)
-                </div>
-            </div>
-
-            <div class="tile tile-karakterer">
-                <div class="tile-header">
-                    <span class="tile-icon">&#128202;</span>
-                    <span class="tile-title">Karakterer</span>
-                </div>
-                <div class="tile-body">
-                    Seneste: Dansk mundtlig — <strong>7</strong><br>
-                    Matematik skriftlig — <strong>10</strong>
-                </div>
-            </div>
-
-            <div class="tile tile-galleri">
-                <div class="tile-header">
-                    <span class="tile-icon">&#128247;</span>
-                    <span class="tile-title">Galleri</span>
-                </div>
-                <div class="tile-body">
-                    12 nye billeder fra idrætsdag tilføjet af Anne-Mette.
-                </div>
-            </div>
-
-            <div class="tile tile-kontakt">
-                <div class="tile-header">
-                    <span class="tile-icon">&#128100;</span>
-                    <span class="tile-title">Kontakt&shy;bog</span>
-                </div>
-                <div class="tile-body">
-                    Sidst opdateret: i går af Anne-Mette Kjær
-                </div>
-            </div>
-
-            <div class="tile tile-dokumenter">
-                <div class="tile-header">
-                    <span class="tile-icon">&#128193;</span>
-                    <span class="tile-title">Dokumenter</span>
-                </div>
-                <div class="tile-body">
-                    Lejrskole_info_2025.pdf<br>
-                    Forældremøde_referat.docx
-                </div>
-            </div>
-        </div>
-
-        <!-- News feed -->
-        <div class="news-section">
-            <div class="news-title">&#128227; Nyheder fra skolen</div>
-
-            <div class="news-item">
-                <div class="news-dot unread"></div>
-                <div>
-                    <div class="news-item-title">Lejrskole til Bornholm — praktisk info</div>
-                    <div class="news-item-meta">Anne-Mette Kjær &middot; i dag kl. 07:42</div>
-                    <div class="news-item-preview">Kære forældre og elever i 7.B. Her kommer den praktiske information om vores lejrskole d. 12.–14. marts. Husk at medbringe...</div>
-                </div>
-            </div>
-
-            <div class="news-item">
-                <div class="news-dot unread"></div>
-                <div>
-                    <div class="news-item-title">Matematikfestival — tilmelding åben</div>
-                    <div class="news-item-meta">Lars Petersen &middot; i går kl. 14:15</div>
-                    <div class="news-item-preview">Årets matematikfestival finder sted d. 28. februar. Alle elever fra 6.–9. klasse kan tilmelde sig. Der vil være...</div>
-                </div>
-            </div>
-
-            <div class="news-item">
-                <div class="news-dot"></div>
-                <div>
-                    <div class="news-item-title">Kantinen holder lukket fredag</div>
-                    <div class="news-item-meta">Kontoret &middot; 10. feb. kl. 09:30</div>
-                    <div class="news-item-preview">Pga. rengøring holder kantinen lukket fredag d. 14. februar. Medbring madpakke.</div>
-                </div>
-            </div>
-
-            <div class="news-item">
-                <div class="news-dot"></div>
-                <div>
-                    <div class="news-item-title">Forældremøde d. 4. marts — referat tilgængeligt</div>
-                    <div class="news-item-meta">Anne-Mette Kjær &middot; 8. feb. kl. 16:20</div>
-                    <div class="news-item-preview">Referat fra forældremødet er nu tilgængeligt under Dokumenter. Kontakt mig hvis I har spørgsmål.</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="portal-footer">
-            Skoledi Elevportal v2.4.1 &middot; Strandvejens Skole &middot; Support: support@skoledi.dk
-        </div>
+<div id="game-layer" class="game-layer">
+    <div class="game-layer-header">
+        <span class="game-layer-title">🎮</span>
+        <span class="game-layer-hint">esc = tilbage</span>
     </div>
+    <div class="game-grid" id="game-grid"></div>
+</div>
 
-    <!-- Game selection grid (hidden until secret trigger) -->
-    <div id="game-layer" class="game-layer">
-        <div class="welcome-bar">
-            <div class="welcome-text" style="color: var(--primary);">&#127918; Spil</div>
-            <div class="welcome-date" style="font-size: 12px; color: var(--text-light);">Tryk Escape for at gå tilbage</div>
-        </div>
-        <div class="game-grid" id="game-grid"></div>
-    </div>
-
-    <!-- Game iframe (replaces content area when playing) -->
-    <div id="game-iframe-wrap" class="game-iframe-wrap">
-        <button class="game-back-btn" id="game-back-btn">&#x2190; Tilbage</button>
-        <iframe id="game-iframe" src="about:blank" allow="autoplay"></iframe>
-    </div>
-
-</main>
+<div id="game-iframe-wrap" class="game-iframe-wrap">
+    <button class="game-back-btn" id="game-back-btn">&larr; Tilbage</button>
+    <iframe id="game-iframe" src="about:blank" allow="autoplay"></iframe>
+</div>
 
 <script src="/skoledi.js"></script>
 </body>
