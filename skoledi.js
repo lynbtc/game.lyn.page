@@ -186,7 +186,7 @@
     var closeBtn = document.getElementById('game-close-btn');
 
     backBtn.addEventListener('click', function () {
-        exitGame();
+        showPortal();
     });
 
     if (closeBtn) {
@@ -197,9 +197,7 @@
 
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
-            if (mode === 'playing') {
-                exitGame();
-            } else if (mode === 'games') {
+            if (mode === 'playing' || mode === 'games') {
                 showPortal();
             }
         }
@@ -216,9 +214,7 @@
     }
 
     window.addEventListener('popstate', function (e) {
-        if (mode === 'playing') {
-            exitGame();
-        } else if (mode === 'games') {
+        if (mode === 'playing' || mode === 'games') {
             showPortal();
         }
     });
