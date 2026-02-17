@@ -81,12 +81,14 @@
         });
     }
 
-    // ── Secret trigger: 5 rapid clicks on logo ──
+    // ── Secret trigger: 5 rapid clicks on any logo ──
 
     var CLICK_THRESHOLD = 5;
     var CLICK_WINDOW = 1200;
 
-    logo.addEventListener('click', function () {
+    var logoGames = document.getElementById('logo-trigger-games');
+
+    function handleLogoClick() {
         var now = Date.now();
         clickTimestamps.push(now);
 
@@ -98,7 +100,22 @@
             clickTimestamps = [];
             toggleSecret();
         }
+    }
+
+    logo.addEventListener('click', handleLogoClick);
+    if (logoGames) logoGames.addEventListener('click', handleLogoClick);
+
+    // Touch: use touchend for faster response on mobile (no 300ms delay)
+    logo.addEventListener('touchend', function (e) {
+        e.preventDefault();
+        handleLogoClick();
     });
+    if (logoGames) {
+        logoGames.addEventListener('touchend', function (e) {
+            e.preventDefault();
+            handleLogoClick();
+        });
+    }
 
     // ── Mode switching ──
 
@@ -127,6 +144,7 @@
 
     function showGames() {
         mode = 'games';
+        pushState('games');
         portalContent.style.opacity = '0';
         setTimeout(function () {
             portalContent.style.display = 'none';
@@ -141,6 +159,7 @@
         var game = games[index];
         if (!game) return;
         mode = 'playing';
+        pushState('playing');
         gameLayer.classList.remove('visible');
         setTimeout(function () {
             gameLayer.style.display = 'none';
@@ -162,11 +181,19 @@
         gameLayer.classList.add('visible');
     }
 
-    // ── Back button & Escape key ──
+    // ── Back / close buttons & Escape key ──
+
+    var closeBtn = document.getElementById('game-close-btn');
 
     backBtn.addEventListener('click', function () {
         exitGame();
     });
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function () {
+            showPortal();
+        });
+    }
 
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
@@ -175,6 +202,24 @@
             } else if (mode === 'games') {
                 showPortal();
             }
+        }
+    });
+
+    // ── Android back button / browser back ──
+    // Push history state when entering game modes so the
+    // hardware back button navigates within the app.
+
+    function pushState(newMode) {
+        try {
+            history.pushState({ mode: newMode }, '');
+        } catch (e) {}
+    }
+
+    window.addEventListener('popstate', function (e) {
+        if (mode === 'playing') {
+            exitGame();
+        } else if (mode === 'games') {
+            showPortal();
         }
     });
 

@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Skoledi — Danmarks digitale læringsportal</title>
     <meta name="description" content="Skoledi — Danmarks mest udbredte læringsportal for 0.–10. klasse.">
     <meta property="og:title" content="Skoledi">
@@ -209,8 +209,15 @@
 
 <div id="game-layer" class="game-layer">
     <div class="game-layer-header">
-        <span class="game-layer-title">🎮</span>
-        <span class="game-layer-hint">esc = tilbage</span>
+        <div class="logo game-layer-logo" id="logo-trigger-games">
+            <svg class="logo-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 28l2-8L24 6l6 6-14 14-8 2z" fill="#eb6954" stroke="#eb6954" stroke-width="1.5" stroke-linejoin="round"/>
+                <path d="M18 12l6 6" stroke="#fff8f5" stroke-width="1.5"/>
+                <path d="M8 28l2.5-1 .5.5-1 2.5" fill="#262626"/>
+            </svg>
+            <span class="logo-text">SKOLEDI</span>
+        </div>
+        <button class="game-close-btn" id="game-close-btn">&times; Luk</button>
     </div>
     <div class="game-grid" id="game-grid"></div>
 </div>
