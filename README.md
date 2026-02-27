@@ -85,4 +85,6 @@ MIT
 
 ---
 
+Test update: README push flow verified on February 27, 2026.
+
 [lyn.page](https://lyn.page)
